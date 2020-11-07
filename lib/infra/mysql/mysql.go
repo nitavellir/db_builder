@@ -21,11 +21,11 @@ type MysqlDriver struct {
 
 func (o *MysqlDriver) Init() error {
 	if o.DB == "" {
-		return errors.New("Specify DB name.")
+		return errors.New("Specify DB name")
 	} else if o.Port < 0 {
-		return errors.New("Port can not be less than 0.")
+		return errors.New("Port can not be less than 0")
 	} else if o.User == "" && o.Password != "" {
-		return errors.New("Specify password with user.")
+		return errors.New("Specify password with user")
 	}
 
 	dsn := "/" + o.DB
@@ -52,5 +52,19 @@ func (o *MysqlDriver) Init() error {
 	}
 
 	o.Conn = db
+	return nil
+}
+
+func (o *MysqlDriver) CreateTable(sql string) error {
+	conn := o.Conn
+	conn.MustExec(sql)
+	return nil
+}
+
+func (o *MysqlDriver) InsertData(sql string) error {
+	conn := o.Conn
+	if _, err := conn.Queryx(sql); err != nil {
+		return err
+	}
 	return nil
 }

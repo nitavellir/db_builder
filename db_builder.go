@@ -5,6 +5,7 @@ import (
 	"db_builder/lib/infra/mysql"
 	"flag"
 	"log"
+	"regexp"
 )
 
 func main() {
@@ -12,6 +13,7 @@ func main() {
 	//Get args
 	h := &exec.Handler{
 		MysqlDriver: &mysql.MysqlDriver{},
+		NumMatch:    regexp.MustCompile(`^[0-9]+$`),
 	}
 	flag.StringVar(&h.MysqlDriver.User, "user", "", "User of the database")
 	flag.StringVar(&h.MysqlDriver.Password, "password", "", "Password of the database")
