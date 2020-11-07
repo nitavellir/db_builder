@@ -19,19 +19,14 @@ func (h *Handler) createSQL() error {
 }
 
 func (h *Handler) createTableSchema() error {
-	create_table_columns := "id bigint NOT NULL AUTO_INCREMENT,\n"
+	create_table_columns := "id bigint NOT NULL AUTO_INCREMENT,"
 	for index, record := range h.Records[0] {
 		data_type := h.DataTypeMap[index]
-		create_table_columns += fmt.Sprintf(`%s %s,\n`, record, data_type)
+		create_table_columns += fmt.Sprintf(`%s %s,`, record, data_type)
 	}
-	create_table_columns = strings.TrimRight(create_table_columns, ",\n")
+	create_table_columns = strings.TrimRight(create_table_columns, ",")
 
-	create_table_schema := fmt.Sprintf(`
-		CREATE TABLE %s (
-			%s
-			PRIMARY KEY (id)
-		);
-	`, h.MysqlDriver.Table, create_table_columns)
+	create_table_schema := fmt.Sprintf(`CREATE TABLE %s (%s,PRIMARY KEY (id));`, h.MysqlDriver.Table, create_table_columns)
 
 	h.CreateTableSchema = create_table_schema
 	return nil
@@ -54,18 +49,14 @@ func (h *Handler) createInsertSQL() error {
 
 		values := make([]string, 0, len(record))
 		for _, value := range record {
-			values = append(values, fmt.Sprintf(`\'%s\'`, value))
+			values = append(values, fmt.Sprintf(`'%s'`, value))
 		}
 		one_record := fmt.Sprintf(`(%s)`, strings.Join(values, ","))
 		insert_records = append(insert_records, one_record)
 	}
-	insert_values_sql := strings.Join(insert_records, ",\n")
+	insert_values_sql := strings.Join(insert_records, ",")
 
-	insert_sql := fmt.Sprintf(`
-		INSERT INTO %s (%s)
-		VALUES
-		%s;
-	`, h.MysqlDriver.Table, insert_columns_sql, insert_values_sql)
+	insert_sql := fmt.Sprintf(`INSERT INTO %s (%s) VALUES %s;`, h.MysqlDriver.Table, insert_columns_sql, insert_values_sql)
 
 	h.InsertSQL = insert_sql
 	return nil

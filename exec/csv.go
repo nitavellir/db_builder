@@ -67,7 +67,7 @@ func (h *Handler) decideColumnType(records [][]string) (map[int]string, error) {
 			is_num := h.NumMatch.MatchString(value)
 			if is_num {
 				value_int64, _ := strconv.ParseInt(value, 10, 64)
-				if value_int64 <= 2147483647 && value_int64 <= -2147483647 {
+				if value_int64 <= 2147483647 && value_int64 >= -2147483647 {
 					data_type_map[index] = "int"
 				} else {
 					data_type_map[index] = "bigint"
