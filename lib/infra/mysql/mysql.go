@@ -57,14 +57,12 @@ func (o *MysqlDriver) Init() error {
 
 func (o *MysqlDriver) CreateTable(sql string) error {
 	conn := o.Conn
-	conn.MustExec(sql)
-	return nil
+	_, err := conn.Exec(sql)
+	return err
 }
 
 func (o *MysqlDriver) InsertData(sql string) error {
 	conn := o.Conn
-	if _, err := conn.Queryx(sql); err != nil {
-		return err
-	}
-	return nil
+	_, err := conn.Queryx(sql)
+	return err
 }
